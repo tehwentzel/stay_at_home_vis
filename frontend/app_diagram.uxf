@@ -1,0 +1,282 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>730</x><y>638</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;DemographicClusters.js&gt;&gt;
+--
+[states]
+-activeDemographics
+-setActiveDemographics
+--
+[properties]
+-activeFrame: fstring
+-activeGroup: int
+-setActiveGroup: function
+-tweetData: object
+
+--
+[components]
+-ClusterVis
+--
+[variables]
+-clusterDemographics: array&lt;string&gt;
+-nClusters: int
+-clusterProps: object
+--
+[functions]
+-calculateClusters</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>638</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;ControlPanel.js&gt;&gt;
+Shows current selected data/frame/other stuff
+--
+[states]
+
+--
+[properties]
+-activeDates
+-activeFrame
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>638</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;SelectFrame.js&gt;&gt;
+Shows a list of moral frame statistics and lets you select one
+--
+[states]
+--
+[properties]
+-activeFrame: string
+-setActiveFrame: function
+-frameData
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]
+-makeFrameList: FrameListItemVis
+-makeFrameListItem: Array&lt;FrameListItemVis&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>230</x><y>1048</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;FrameListItemVis.js&gt;&gt;
+D3 component for the statistics for each moral frame
+--
+[states]
+
+--
+[properties]
+-frameDataEntry
+-frameName
+-setActiveFrame
+--
+[components]
+
+--
+[variables]
+-isActive: boolean
+
+--
+[functions]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>638</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;Timeline.js&gt;&gt;
+Shows a list of moral frame statistics and lets you select one
+--
+[states]
+-brushedTweetId
+-setBrushedTweetId
+--
+[properties]
+-activeFrame: string
+-activeMonth: string
+-setActiveMonth: function
+-activeGroup: int
+-setActiveGroup: function
+-tweetData: string
+--
+[components]
+-TimelineVis
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>1048</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;TimelineVis.js&gt;&gt;
+D3 component of the timeline
+--
+[states]
+--
+[properties]
+-activeFrame: string
+-activeMonth: string
+-setActiveMonth: function
+-activeGroup: int
+-setActiveGroup: function
+-tweetData: string
+-brushedTweetId
+-setBrushedTweetId
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>350</x><y>8</y><w>210</w><h>470</h></coordinates><panel_attributes>&lt;&lt;DemographicClusters.js&gt;&gt;
+--
+[states]
+-activeDates: string 
+-setActiveDates: function
+-activeFrame: string
+-setActiveFrame: function
+-activeGroup: int
+-setActiveGroup: function
+-isLoading: boolean
+-setIsLoading: function
+
+-frameData: object
+-setFrameData: function
+-countyData: object
+-setCountyData: function
+-tweetData: object
+-setTweetData
+--
+[properties]
+
+--
+[components]
+-ControlBar
+-SelectFrame
+-Timeline
+-DemographicClusters
+-CountyData
+--
+[variables]
+
+--
+[functions]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>730</x><y>1048</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;ClusterViz.js&gt;&gt;
+--
+[states]
+
+--
+[properties]
+-activeFrame: fstring
+-setActiveFrame: function
+-activeGroup: int
+-setActiveGroup: function
+-tweetData: object
+-activeDemographics
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1080</x><y>638</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;CountyData.js&gt;&gt;
+--
+[states]
+-activeTab:  string
+-setActiveTab: function
+-mapVar1:string
+-setMapVar1: function
+-mapVar2: string
+-setMapVar2: function
+-aggregateCountys: boolean
+setAggregateCountys: function
+
+--
+[properties]
+-activeFrame: fstring
+-activeGroup: int
+-setActiveGroup: function
+-countyData: object
+
+--
+[components]
+-MapVis
+-ScatterPlotVis
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>970</x><y>1048</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;MapVis.js&gt;&gt;
+--
+[states]
+-activeTab:  string
+-setActiveTab: function
+-mapVar1:string
+-setMapVar1: function
+-mapVar2: string
+-setMapVar2: function
+-aggregateCountys: boolean
+setAggregateCountys: function
+
+--
+[properties]
+-activeGroup: int
+-setActiveGroup: function
+-countyData: object
+-mapVar1:string
+-mapVar2: string
+-aggregateCountys: boolean
+
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1220</x><y>1048</y><w>210</w><h>340</h></coordinates><panel_attributes>&lt;&lt;ScatterPlotVis.js&gt;&gt;
+--
+[states]
+-activeTab:  string
+-setActiveTab: function
+-mapVar1:string
+-setMapVar1: function
+-mapVar2: string
+-setMapVar2: function
+-aggregateCountys: boolean
+setAggregateCountys: function
+
+--
+[properties]
+-activeGroup: int
+-setActiveGroup: function
+-countyData: object
+-mapVar1:string
+-mapVar2: string
+-aggregateCountys: boolean
+
+--
+[components]
+
+--
+[variables]
+
+--
+[functions]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>89</x><y>466</y><w>380</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;180;10;90;360;90;360;10</additional_attributes></element><element><id>Relation</id><coordinates><x>329</x><y>466</y><w>140</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;180;10;90;120;90;120;10</additional_attributes></element><element><id>Relation</id><coordinates><x>439</x><y>466</y><w>170</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>150;180;150;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>439</x><y>466</y><w>410</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>390;180;390;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>329</x><y>970</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>579</x><y>970</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>829</x><y>970</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1068</x><y>969</y><w>140</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;80;10;40;120;40;120;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1181</x><y>962</y><w>170</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>150;90;150;50;10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>690</x><y>140</y><w>100</w><h>110</h></coordinates><panel_attributes>TweetData
+--
+[variables]
+
+--
+[functions]
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>685</x><y>0</y><w>100</w><h>100</h></coordinates><panel_attributes>FrameData
+--
+[variables]
+-data
+-currMonth
+--
+[functions]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>695</x><y>290</y><w>100</w><h>120</h></coordinates><panel_attributes>countyData
+--
+[variables]
+
+--
+[functions]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>925</x><y>160</y><w>100</w><h>150</h></coordinates><panel_attributes>dataAPI
+--
+[variables]
+-isLoaded
+--
+[functions]
+async fetchData
+getColor</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>770</x><y>50</y><w>180</w><h>210</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>160;190;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>190</y><w>170</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>150;50;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>230</y><w>170</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>150;10;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>550</x><y>40</y><w>160</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>140;10;10;160</additional_attributes></element><element><id>Relation</id><coordinates><x>545</x><y>190</y><w>170</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;160;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>545</x><y>190</y><w>170</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>150;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>435</x><y>470</y><w>760</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>740;180;740;80;10;80;10;10</additional_attributes></element></diagram>

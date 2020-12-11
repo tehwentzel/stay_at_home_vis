@@ -1,0 +1,52 @@
+.App {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}
+
+.container{
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: center; 
+  width: 100vw;
+}
+
+.grid-item{
+  border: 1px solid red;
+  flex-shrink: 3;
+  align-content: center;
+  align-self: center;
+  flex-basis: auto;
+}
+
+#controlBar{
+  height: 3em;
+  width: 100%;
+  background: black;
+}
+
+#topLeft{
+  height: calc(50vh - 1.5em);
+  width: 34%;
+  background: blue;
+}
+
+#topRight{
+  height: calc(50vh - 1.5em);
+  width: 65%;
+  background: green;
+}
+
+#bottomLeft{
+  height: calc(50vh - 1.5em);
+  width: 60%;
+  background: red;
+}
+
+#bottomRight{
+  height: calc(50vh - 1.5em);
+  width: 39%;
+  background: cyan;
+}
