@@ -1,9 +1,6 @@
 import pandas as pd
-import geojson
 import numpy as np
 import json
-import geopandas as gp
-import fiona
 from shapely.geometry import Polygon, MultiPolygon, Point, mapping, shape
 import matplotlib as plt
 
