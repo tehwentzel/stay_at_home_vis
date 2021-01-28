@@ -83,7 +83,6 @@ class TweetClusterer():
             #figure out what data is in the demographics so we can regularize it - so we ignore derived stuff
             regularize_fields = self.valid_fields([tweet_df.columns,county_df.columns])
             default_fields = sorted(set(self.fields) - set(regularize_fields))
-            print(regularize_fields,default_fields)
             cdata = county_df.loc[:,regularize_fields].values
             self.fit_kbins(cdata)
             
@@ -230,7 +229,6 @@ class DataProcessor():
         #drop extra features, but check that they're in the columns because there's no good way to do that in pandas?
         to_drop = ['screen_name','user_id'] + self.demographic_fields
         df = df.drop(list(set(df.columns).intersection(set(to_drop))),axis=1)
-        print(to_drop, df.columns)
         #filter stuff to the selected month and frame
         if frame is not None:
             df = df[df[frame] == 1]
@@ -388,6 +386,7 @@ class DataProcessor():
             entry['is_blue'] = subdf.is_blue.sum()
             entry['positive_sentiment'] = (subdf.sentiment_score > .05).sum()
             entry['negative_sentiment'] = (subdf.sentiment_score < .05).sum()
+            entry['case_ids'] = list(subdf.case_id.values)
             cluster_dict[cluster] = entry
         return pd.DataFrame(cluster_dict).T
     

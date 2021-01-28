@@ -1,38 +1,86 @@
 .App {
   text-align: center;
+  height: 100%;
+  width: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#navBar{
+  height: 3em;
+  background: gray;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.vizRow{
+  height: calc((100vh - 2em)/2);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.vizComponent{
+  height: 100%;
+  font-size: 30px;
 }
 
-.App-link {
-  color: #61dafb;
+#frameviewWindow{
+  background: white;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#clusterviewWindow{
+  background: orange;
+}
+
+#mapviewWindow{
+  background: teal;
+}
+
+#timelineviewWindow{
+  background: green;
+}
+
+.d3-component{
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.frameEntry{
+  height: 2.5em;
+  width: 95%;
+  left: 2.5%;
+}
+
+.forSah{
+  fill: rgb(63, 150, 179);
+}
+
+.againstSah{
+  fill: rgb(84, 83, 94);
+}
+
+.positiveSentiment{
+  fill: rgb(123, 184, 204);
+}
+
+.negativeSentiment{
+  fill: rgb(40, 19, 70);
+}
+
+.neutralSentiment{
+  fill: rgb(136, 127, 127);
+}
+
+.vividQuality{
+  fill: rgb(255, 196, 0);
+}
+
+.genericQuality{
+  fill: rgb(85, 66, 66);
+}
+
+.blueState{
+  fill: blue;
+}
+
+.redState{
+  fill: red;
 }

@@ -86,27 +86,20 @@ def get_map_borders():
         borders = data.county_borders
     return responsify(borders)
 
-@app.route('/clusters',methods=['GET','POST'])
+@app.route('/clusters',methods=['GET'])
 def get_cluster_data():
     #should get a list of fields to use for clustering and the # of clusters
     #return a list of json entrys for each cluster
     #[{total_tweets, <fields passed>, cases/deaths_per_captia_quantiles, for/against_sah_rt_quantiles, is_blue, positive/negative_sentiment (county)}]
     default_clusters = 3
-    default_fields = 'net_dem_president_votes'
-    #todo get cluster fields, number of clusers and bin coun
-    #need to test more.  issue with using a list of fields in a request
-    if request.method=='GET':
-        print('you should use post for clusters because this only handles one field')
-        c_fields = request.args.get('cluster_fields',default_fields)
-        n_clusters = request.args.get('n_clusters',default_clusters)
-        c_fields = [c_fields]
-    if  request.method == 'POST':
-        c_fields = request.form['cluster_fields']
-        if 'n_clusters' in request.form:
-            n_clusters = request.form['n_clusters']
-        else:
-            n_clusters = default_clusters
+    default_fields = ['net_dem_president_votes']
+
+    c_fields = request.args.getlist('cluster_fields')
+    n_clusters = request.args.get('n_clusters',default_clusters)
+
+    print()
     print('request args', c_fields, n_clusters)
+    print()
     cluster_dict = data.load_tweetcluster_dict(c_fields,int(n_clusters))
     return responsify(cluster_dict)
 
