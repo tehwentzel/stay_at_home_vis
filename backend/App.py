@@ -7,6 +7,7 @@ from Constants import Constants
 
 app = Flask(__name__)
 CORS(app)
+print('code yay')
 
 data = DataProcessor()
 
@@ -96,7 +97,8 @@ def get_cluster_data():
 
     c_fields = request.args.getlist('cluster_fields')
     n_clusters = request.args.get('n_clusters',default_clusters)
-
+    if len(c_fields) <= 0:
+        c_fields = default_fields
     print()
     print('request args', c_fields, n_clusters)
     print()

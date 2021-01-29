@@ -115,8 +115,9 @@ class TweetClusterer():
 
 class DataProcessor():
     
-    def __init__(self, quant_bins = 10):
+    def __init__(self, quant_bins = 5):
         self.quant_bins = quant_bins
+        self.sentiment_threshold = .25
         self.demographic_df = load_census_df()
         self.demographic_fields = self.get_demographic_fields(self.demographic_df)
         
@@ -163,11 +164,11 @@ class DataProcessor():
         mdf.loc[:,'deaths_per_capita'] = (mdf.deaths/mdf.cvap)
         return mdf[mdf.GEOID != 0]
 
-    def stratify_retweet_thresholds(self, n_quantiles=10, retweet_col='retweet_count'):
+    def stratify_retweet_thresholds(self, n_quantiles=5, retweet_col='retweet_count'):
         tdf = self.tweet_df.copy()
         retweets = tdf[tdf[retweet_col] > 1]
         retweets = retweets[retweet_col]
-        quantile_edges =np.quantile(retweets,[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,.99],interpolation='nearest')
+        quantile_edges =np.quantile(retweets,[0,.2,.4,.6,.8,.9],interpolation='nearest')
         quantile_edges = sorted(set([0,1]).union(set(quantile_edges)))
         quantile_edges = [int(q)  for q in quantile_edges]
         return quantile_edges
@@ -205,14 +206,17 @@ class DataProcessor():
 
                 for_rt_quantiles.append(for_sah_q)
                 against_rt_quantiles.append(against_sah_q)
-
+    
             entry['vivid'] = frame_df.is_vivid.sum()
             entry['for_sah'] = frame_df.for_sah.sum()
             entry['is_blue'] = frame_df.is_blue.sum()
             entry['for_sah_rt_quantiles'] = for_rt_quantiles
             entry['against_sah_rt_quantiles'] = against_rt_quantiles
-            entry['positive_sentiment'] = (frame_df.sentiment_score > .05).sum()
-            entry['negative_sentiment'] = (frame_df.sentiment_score < .05).sum()
+            entry['positive_sentiment'] = (frame_df.sentiment_score > self.sentiment_threshold).sum()
+            entry['negative_sentiment'] = (frame_df.sentiment_score < -self.sentiment_threshold).sum()
+            #these are for future use maybe.  not efficient but it's like 5 values so i don't care
+            entry['quantile_bins'] = quantile_thresholds
+            entry['high_retweets'] = (frame_df.retweet_count > 100).sum()
             frame_data[frame] = entry
         return pd.DataFrame(frame_data).T.fillna(-1)
     
@@ -229,6 +233,7 @@ class DataProcessor():
         #drop extra features, but check that they're in the columns because there's no good way to do that in pandas?
         to_drop = ['screen_name','user_id'] + self.demographic_fields
         df = df.drop(list(set(df.columns).intersection(set(to_drop))),axis=1)
+        print(to_drop, df.columns)
         #filter stuff to the selected month and frame
         if frame is not None:
             df = df[df[frame] == 1]
@@ -237,7 +242,7 @@ class DataProcessor():
         if year is not None:
             df = df[df.year == year]
         #in case we want only popular tweets
-        df = df[df.retweet_count >= min_retweets].drop(['month','year','GEOID','parent'],axis=1)
+        df = df[df.retweet_count >= min_retweets].drop(['month','year'],axis=1)
         tweet_dict = {day:d.to_dict(orient='records') for day,d in df.groupby('day')}
         return tweet_dict
     
@@ -384,9 +389,11 @@ class DataProcessor():
             entry['against_sah_rt_quantiles'] = self.decile_count(against_sah_rt,n_bins)
             
             entry['is_blue'] = subdf.is_blue.sum()
-            entry['positive_sentiment'] = (subdf.sentiment_score > .05).sum()
-            entry['negative_sentiment'] = (subdf.sentiment_score < .05).sum()
-            entry['case_ids'] = list(subdf.case_id.values)
+            entry['positive_sentiment'] = (subdf.sentiment_score > self.sentiment_threshold).sum()
+            entry['negative_sentiment'] = (subdf.sentiment_score < -self.sentiment_threshold).sum()
+            #for use in clustering
+            entry['GEOIDs'] = list(np.unique(subdf.GEOID))
+            entry['parents'] = list(np.unique(subdf.parent))
             cluster_dict[cluster] = entry
         return pd.DataFrame(cluster_dict).T
     

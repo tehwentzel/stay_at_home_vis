@@ -15,13 +15,17 @@
 
 .vizComponent{
   height: 100%;
-  font-size: 30px;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
 }
 
 #frameviewWindow{
   background: white;
   overflow-y: scroll;
   overflow-x: hidden;
+  margin: 0px;
+  padding: 0px;
 }
 
 #clusterviewWindow{
@@ -44,9 +48,10 @@
 }
 
 .frameEntry{
-  height: 2.5em;
-  width: 95%;
-  left: 2.5%;
+  height: 3.5em;
+  width: 100%;
+  margin: 0px;
+  margin-top: 1vh;
 }
 
 .forSah{

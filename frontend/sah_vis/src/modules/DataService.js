@@ -23,7 +23,6 @@ export default class DataService {
 
     async getFrameViewData(){
         var frameData = await this.api.get('/frames');
-        console.log('fetching frame data')
         return frameData.data;
     }
 

@@ -3,6 +3,7 @@ import './App.css';
 import React, {useState, useEffect} from 'react';
 import * as constants from './modules/Constants.js';
 import DataService from './modules/DataService';
+import ColorManager from './modules/ColorManager';
 import Utils from './modules/Utils';
 
 import FrameView from './components/FrameView/FrameView.js';
@@ -18,11 +19,13 @@ import Col from 'react-bootstrap/Col';
 
 function App() {
   var api = new DataService();
+  var colorManager = new ColorManager();
   api.test();
 
   const [selectedMonth, setSelectedMonth] = useState(3) //month is an integer for now 
   const [selectedFrame, setSelectedFrame] = useState('Authority') //will change in the future
-  const [brushedTweets, setBrushedTweets] = useState([])
+  const [brushedCountys, setBrushedCountys] = useState([])
+
 
   return (
     <div className="App">
@@ -36,6 +39,7 @@ function App() {
           <Col id={'frameviewWindow'} className={'vizComponent'} lg={4}>
             <FrameView
               api={api}
+              colorManager={colorManager}
               selectedFrame={selectedFrame}
               setSelectedFrame={setSelectedFrame}
             ></FrameView>
@@ -43,6 +47,7 @@ function App() {
           <Col id={'clusterviewWindow'} className={'vizComponent'} md={8}>
             <ClusterView
               api={api}
+              colorManager={colorManager}
             ></ClusterView>
           </Col>
         </Row>
@@ -50,11 +55,13 @@ function App() {
           <Col id={'mapviewWindow'} className={'vizComponent'} lg={5}>
             <CountyView
               api={api}
+              colorManager={colorManager}
             ></CountyView>
           </Col>
           <Col id={'timelineviewWindow'} className={'vizComponent'} lg={7}>
             <TimelineView
               api={api}
+              colorManager={colorManager}
             ></TimelineView>
           </Col>
         </Row>
