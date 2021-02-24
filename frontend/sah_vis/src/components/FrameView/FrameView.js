@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import { API_URL } from '../../modules/Constants.js';
 import Utils from '../../modules/Utils.js';
 import './FrameView.css';
 import FrameViewD3 from './FrameViewD3.js';
@@ -8,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import * as d3 from "d3";
 
 export default function FrameView(props){
 
@@ -31,12 +29,27 @@ export default function FrameView(props){
             var wTransform = x=>(x**.5)
             var [maxRTFor,maxRTAgainst] = getMaxRTValue(frameData,wTransform)
             let makeFrameEntry = ([fName, fDict]) => {
-                //for future use?
-                // var isActive = (props.selectedFrame === fName);
+                
+                //set up the selection button
+                var isActive = (props.selectedFrame === fName);
+                var buttonVariant = isActive? 'secondary':'outline-secondary';
+                var buttonClass = isActive? 'activeButton frameButton':'frameButton';
+                var setFrame = (e) => {
+                    props.setSelectedFrame(fName);
+                }
+
                 return (
-                    <Row fluid noGutters key={fName} className={'frameEntry'} sm={12}>
+                    <Row key={fName} className={'frameEntry'} sm={12}>
                         <Col sm={2}>
-                            {fName}
+                            <Button 
+                                variant={buttonVariant}
+                                onClick={setFrame}
+                                value={fName}
+                                className={buttonClass}
+                                block
+                            >
+                                {fName}  
+                            </Button>
                         </Col>
                         <Col sm={10}>
                             <FrameViewD3 
@@ -57,28 +70,16 @@ export default function FrameView(props){
             setFrameList(newFrameList)
         }
     },
-    [frameData, sortVariable])
+    [frameData, sortVariable, props.selectedFrame, props.windowSize])
 
     return (
-        <Container fluid noGutters>
-            <Row fluid noGutters sm={12}>
+        <Container fluid={'true'}>
+            <Row sm={12}>
                 <Col sm={2}>
                     {'Frame'}
                 </Col>
-                <Col sm={1}>
-                    {'Sentiment'}
-                </Col>
-                <Col sm={2}>
-                    {'Quality'}
-                </Col>
-                <Col sm={1}>
-                    {'Voting'}
-                </Col>
-                <Col sm={2}>
-                    {'Against SAH'}
-                </Col>
-                <Col sm={2}>
-                    {'For SAH'}
+                <Col sm={10}>
+                {'Sentiment Quality Voting Against | For SAH by # retweets'}
                 </Col>
             </Row>
             {frameList}
@@ -89,13 +90,11 @@ export default function FrameView(props){
 function sortFrames(fData, sortVar){
     let accessor = getAccessor(sortVar);
     let valArray = []
-    console.log(fData)
     for(const [frame,fdata] of Object.entries(fData)){
         let entry = [frame, fdata];
         valArray.push(entry)
     }
     valArray.sort((a,b) => accessor(b[1]) - accessor(a[1]));
-    // console.log('sorted', valArray)
     return valArray
 }
 

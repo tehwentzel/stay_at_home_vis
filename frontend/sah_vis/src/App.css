@@ -28,6 +28,7 @@
   padding: 0px;
 }
 
+
 #clusterviewWindow{
   background: orange;
 }
@@ -44,14 +45,20 @@
   height: 100%;
   width: 100%;
   margin: 0px;
+  margin-top: 2px;
   padding: 0px;
 }
 
 .frameEntry{
-  height: 3.5em;
+  height: 6vh;
   width: 100%;
   margin: 0px;
   margin-top: 1vh;
+  margin-left: 10px !important;
+}
+
+.frameEntry .d3-component{
+  min-height: 2vh;
 }
 
 .forSah{
@@ -63,29 +70,54 @@
 }
 
 .positiveSentiment{
-  fill: rgb(123, 184, 204);
+  fill: rgb(204, 248, 5);
 }
 
 .negativeSentiment{
-  fill: rgb(40, 19, 70);
+  fill: rgb(47, 51, 7);
 }
 
 .neutralSentiment{
-  fill: rgb(136, 127, 127);
+  fill: rgb(135, 136, 127);
 }
 
 .vividQuality{
-  fill: rgb(255, 196, 0);
+  fill: rgb(150, 90, 137);
 }
 
 .genericQuality{
-  fill: rgb(85, 66, 66);
+  fill: rgb(170, 165, 165);
 }
 
 .blueState{
-  fill: blue;
+  fill: rgb(54, 54, 253);
 }
 
 .redState{
-  fill: red;
+  fill: rgb(241, 88, 88);
+}
+
+.tooltip {	
+  position: absolute;
+  z-index: 10;
+  opacity: 1!important;			
+  text-align: center;			
+  width: auto;					
+  height: auto;					
+  padding: 10px;				
+  font: 12px sans-serif;		
+  background: rgb(172, 173, 173);	
+  border: 0px;		
+  border-radius: 8px;			
+  pointer-events: none;			
+}
+
+.frameButton{
+  height: 100%;
+  width: calc(100%-20px);
+  margin: 0px;
+  left: 20px !important;
+  font-size: .9em !important;
+  /* margin-left: -.2vw; */
+  font-weight: bold !important;
 }

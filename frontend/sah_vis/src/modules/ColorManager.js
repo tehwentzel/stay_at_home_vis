@@ -1,5 +1,6 @@
 // import * as constants from './Constants';
-// import { quantile, qunatileRank } from 'simple-statistics';
+import { quantile, qunatileRank } from 'simple-statistics';
+import Utils from './Utils.js';
 import * as d3 from 'd3';
 
 export default class ColorManager {
@@ -29,6 +30,24 @@ export default class ColorManager {
                 return d3.interpolateGreys;
                 break;
         }
+    }
+
+    makeQuantiles(values){
+        var valueRanges = Utils.arrange(.5,1,Math.round(values.length/3)+1);
+        console.log('values',values, valueRanges);
+        var qs = quantile(values.filter( d => d > 0), valueRanges);
+        var scale = d3.scaleLinear()
+            .domain(qs)
+            .range(valueRanges);
+        return scale
+    }
+
+    makeQuantileColorScale(values, varName){
+        var qScale = this.makeQuantiles(values);
+        var interpolator = this.getInterpolator(varName);
+
+        var getColor = (v) => interpolator(qScale(v));
+        return getColor
     }
 
     colorsFromQuantileCounts(qCounts, varName){

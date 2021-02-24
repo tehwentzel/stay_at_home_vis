@@ -39,22 +39,6 @@ export default class Utils {
         }
     }
 
-    static aggregateValues(dataGroup, accessor, aggregator, weightAccessor){
-        //helper function to aggregate values accross county groups
-        //data is a single county group {'counties':[{data},{data}], ...}, accessor gets a single value, aggregator is like sum/mean
-        //weightAccessor is a secondary accessor for like population if we want to weight the sums
-        var values = [];
-        for(var dataPoint of dataGroup.counties){
-            let dataVal = accessor(dataPoint);
-            if(weightAccessor !== undefined){
-                dataVal = dataVal*weightAccessor(dataPoint);
-            }
-            values.push(dataVal)
-        }
-        var finalValue = aggregator(values);
-        return finalValue
-    }
-
     static numberWithCommas(x){
 
         //from https://stackoverflow.com/a/2901298
@@ -126,26 +110,6 @@ export default class Utils {
         return Utils.unCamelCase(string+'PerCapita')
     }
 
-    static markify(stringArray, activeLabel){
-        //converts array of things to a discrete format to use in sliders and maybe other stuff
-        let stepSize = 100/(stringArray.length - 1);
-        let currStep = 0;
-        var markArray = [];
-        for(var val in stringArray){
-            let label = stringArray[val]
-            if(activeLabel !== undefined){
-                label = (label === activeLabel)? label: '';
-            }
-            let newEntry = {
-                value: val,
-                label: label
-            }
-            markArray.push(newEntry)
-            currStep = currStep + stepSize;
-        }
-        return markArray;
-    }
-
     static markifiedLabelLookup(index, markArray){
         //take an array from markify and maps an index to a value, for the slider
         var entry = markArray.filter(d => d.value === index);
@@ -184,5 +148,15 @@ export default class Utils {
         }
         vals.push(stop)
         return vals
+    }
+
+    static moveTTip(tTip, event){
+        tTip.style('left', event.pageX + 'px')
+            .style('top', (event.pageY - 20) + 'px')
+            .style('visibility', 'visible');
+    }
+    
+    static hideTTip(tTip){
+        tTip.style('visibility', 'hidden')
     }
 }
