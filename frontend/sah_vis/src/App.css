@@ -1,0 +1,91 @@
+.App {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+#navBar{
+  height: 3em;
+  background: gray;
+}
+
+.vizRow{
+  height: calc((100vh - 2em)/2);
+}
+
+.vizComponent{
+  height: 100%;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+}
+
+#frameviewWindow{
+  background: white;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 0px;
+  padding: 0px;
+}
+
+#clusterviewWindow{
+  background: orange;
+}
+
+#mapviewWindow{
+  background: teal;
+}
+
+#timelineviewWindow{
+  background: green;
+}
+
+.d3-component{
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.frameEntry{
+  height: 3.5em;
+  width: 100%;
+  margin: 0px;
+  margin-top: 1vh;
+}
+
+.forSah{
+  fill: rgb(63, 150, 179);
+}
+
+.againstSah{
+  fill: rgb(84, 83, 94);
+}
+
+.positiveSentiment{
+  fill: rgb(123, 184, 204);
+}
+
+.negativeSentiment{
+  fill: rgb(40, 19, 70);
+}
+
+.neutralSentiment{
+  fill: rgb(136, 127, 127);
+}
+
+.vividQuality{
+  fill: rgb(255, 196, 0);
+}
+
+.genericQuality{
+  fill: rgb(85, 66, 66);
+}
+
+.blueState{
+  fill: blue;
+}
+
+.redState{
+  fill: red;
+}

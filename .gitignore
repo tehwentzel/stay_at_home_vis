@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
