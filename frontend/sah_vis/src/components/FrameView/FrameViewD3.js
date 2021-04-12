@@ -24,6 +24,12 @@ export default function FrameViewD3({data, frameName, setSortVariable, maxRTFor,
                 //as far as I can tell this will automatically be the parent div size 
                 //becuase of the class css
                 d3.select(d3Container.current).selectAll('svg').remove()
+
+                //hardcoded because I keep having to adjust it everywhere
+                //the data should have *_quantiles with bin edges of thes values
+                //this should correspond to the function in the data backend that quantizes the retweet count
+                const quantileBins = [0,1,10];
+            
             
                 var height = d3Container.current.clientHeight*.99;
                 var width = d3Container.current.clientWidth*.99;
@@ -140,13 +146,13 @@ export default function FrameViewD3({data, frameName, setSortVariable, maxRTFor,
                         let tWidth = getWidth(count);
                         var maxRt = 'inf'
                         if(idx > 0){
-                            maxRt = data.quantile_bins[i+1]
+                            maxRt = quantileBins[i+1]
                         }
                         var entry = {
                             x:  (invert)? currPos-tWidth: currPos,
                             width: tWidth,
                             color: colors[i],
-                            minRt: data.quantile_bins[i],
+                            minRt: quantileBins[i],
                             maxRt: maxRt,
                             tweets: count,
                         }
@@ -169,8 +175,12 @@ export default function FrameViewD3({data, frameName, setSortVariable, maxRTFor,
                         .on('dblclick', ()=>setSortVariable('totalTweets'))
                         .on('mouseover', function(e){
                             let d = d3.select(this).datum();
+                            let upperLimit = '-' + d.maxRt;
+                            if(d.maxRt === 'inf'){
+                                upperLimit = '+';
+                            }
                             let tipText = 'Tweets ' + varName + ' </br>'
-                            + d.minRt + '-' + d.maxRt + ' RTs: ' + d.tweets + '</br>'
+                            + d.minRt + upperLimit + ' RTs: ' + d.tweets + '</br>'
                             +'total: ' + data.total_tweets + '</br>' 
                             tTip.html(tipText)
                         }).on('mousemove', function(e){

@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import '../../App.css';
 import Utils from '../../modules/Utils.js';
-import { range } from 'd3';
+import legend from 'd3-svg-legend';
 
-export default function TimelineViewD3({data, rtTransform, appProps}){
+export default function TimelineViewD3({data, rtTransform, activeOnly, selectedFrame, appProps}){
     const d3Container = useRef(null);
 
     const [height, setHeight] = useState(0);
@@ -12,10 +12,11 @@ export default function TimelineViewD3({data, rtTransform, appProps}){
     const [svg, setSvg] = useState();
     const [tTip, setTTip] = useState();
     const [svgCreated,setSvgCreated] = useState(false);
+    const [timelineDrawn, setTimelineDrawn] = useState(false)
 
-    const sentimentHeightRatio = .1;
     const yMargin = 10;
     const xMargin = 10;
+
     useEffect(function makeSvg(){
         if(data && d3Container.current){
             
@@ -47,85 +48,85 @@ export default function TimelineViewD3({data, rtTransform, appProps}){
 
     useEffect(function drawTimeline(){
         if (data && svgCreated) {
-
-            let days = Utils.arrange(1,31,31);//array 1 to 31
-            var sentimentHeight = sentimentHeightRatio*height;
-            
-            var [maxFor, maxAgainst, allCases] = getCalibrationValues(data, rtTransform);
-            
-            if(allCases.length <= 0){
+            const tData = data['data'];
+            if(tData === undefined){
                 return
             }
-            var getTweetColor = appProps.colorManager.makeQuantileColorScale(allCases, 'cases');
-            
-            var getTweetHeight = function(rt_count){
-                return (height-sentimentHeight)*rtTransform(rt_count)/(maxFor+maxAgainst);
+            const maxCpcDiscrete = data['max_cases_per_capita_discrete'];
+            const maxCpc = data['max_cases_per_capita'];
+            const barWidth = width/tData.length;
+
+            var filterTweets;
+            if(activeOnly){
+                filterTweets = x => (parseInt(x[selectedFrame]) === 1);
+            } else{
+                filterTweets = x => (parseInt(x[selectedFrame]) !== 1);
             }
 
-            var barWidth = (width - 2*xMargin)/(days.length);
-            var getTweetX = function(day){
-                return day*barWidth;
-            }
+            const [maxRtDiscreteFor, maxRtDiscreteAgainst] = getRtExtents(data, filterTweets);
 
-            var getSentimentColor = d3.scaleLinear()
-                .domain([-1,0,1])
-                .range(['black','gray','yellow']);
+            var xAxisCenter = (height - 2*yMargin)*maxRtDiscreteFor/(maxRtDiscreteFor + maxRtDiscreteAgainst);
 
-            var formattedAllTweets = [];
-            var sentimentData = [];
-            for(const [day, tweetList] of Object.entries(data)){
-                var startPos = (height-sentimentHeight)*(maxFor + 1)/(maxFor + maxAgainst + 2);
-                var currYFor = startPos - sentimentHeight/2;
-                var currYAgainst = startPos + sentimentHeight/2;
+            var casesInterpolator = appProps.colorManager.getInterpolator('cases');
+            var caseScale = d3.scalePow(.5)
+                .domain([0, maxCpcDiscrete])
+                .range([0, 1])
+            var getTweetColor = x => casesInterpolator(caseScale(x.cases_per_capita_discrete));
 
-                //sort the tweets so the popular ones are on bottom;
-                tweetList.sort((b,a) => (a.retweet_count - b.retweet_count));
-                var dayX = getTweetX(day);
+            var getXPos = x => (x.pos)*barWidth;
+            var getMaxBarHeight = x => (x + 1)*(height - 3*yMargin)/(maxRtDiscreteFor + maxRtDiscreteAgainst);
+            var getBarHeight = x => Math.min(getMaxBarHeight(x), .2*height);
+            //all the data
+            var formattedTweets = [];
 
-                var todaySentiment = 0;
-                var totalRT = 0;
-
-                for(const tweet of tweetList){
-                    var tHeight = getTweetHeight(tweet.retweet_count);
-                    var color = getTweetColor(tweet.cases_per_capita);
+            //track the heights so I can fix the final height of the thing
+            for(const block of tData){
+                var xPos = getXPos(block);
+                var currYFor = xAxisCenter - yMargin/4;
+                var currYAgainst = xAxisCenter + yMargin/4;
+                let validTweets = block.tweets.filter(filterTweets);
+                validTweets.sort((b,a) => (a.retweet_count - b.retweet_count));
+                if(validTweets.length === undefined || validTweets.length === 0){
+                    continue
+                }
+                for(const tweet of validTweets){
+                    var color = getTweetColor(tweet);
+                    var tHeight = getBarHeight(tweet.rt_discrete);
                     var tweetY;
                     if(parseInt(tweet.for_sah) === 1){
                         tweetY = currYFor-tHeight;
                         currYFor -= tHeight;
+
                     } else{
                         tweetY = currYAgainst;
                         currYAgainst += tHeight;
                     }
-                    var entry = {
-                        x: dayX,
+                    let entry = {
+                        fill: color,
+                        x: xPos,
+                        y: tweetY,
                         height: tHeight,
                         width: barWidth,
-                        y: tweetY,
-                        fill: color,
-                        text: tweet.text
-                    }
+                        text: tweet.text,
+                        cases: tweet.cases,
+                        pop: tweet.cvap,
+                        geoid: tweet['GEOID'],
+                        rtCount: tweet.retweet_count,
+                        isVivid: tweet.is_vivid,
+                    };
+                    formattedTweets.push(entry);
+                }
                 
-                    formattedAllTweets.push(entry);
-
-                    todaySentiment += tweet.sentiment_score*(tweet.retweet_count + 1);
-                    totalRT += (tweet.retweet_count + 1);
-                }
-
-                var meanSentiment = (totalRT === 0)? todaySentiment:todaySentiment/totalRT;
-                var sRectHeight = sentimentHeight*.9;
-                var sentimentEntry = {
-                    x: dayX,
-                    width: barWidth,
-                    height: sRectHeight,
-                    y: startPos - sRectHeight/2,
-                    fill: getSentimentColor(meanSentiment)
-                }
-                sentimentData.push(sentimentEntry);
-
             }
-            svg.selectAll('rect').filter('.tweetRect').remove()
-            var tweetRects = svg.selectAll('rect').filter('.tweetRect')
-                .data(formattedAllTweets).enter()
+            svg.selectAll('g').filter('.timelineGroup').remove()
+
+            //shift the rects up a little bit so it hits the top of the svg
+            var tweetRectGroup = svg.append('g')
+                .attr('class', 'timelineGroup');
+
+            var tweetRects = tweetRectGroup.selectAll('rect')
+                .filter('.tweetRect')
+                .data(formattedTweets).enter()
                 .append('rect')
                 .attr('class','tweetRect')
                 .attr('x', x=>x.x)
@@ -134,7 +135,7 @@ export default function TimelineViewD3({data, rtTransform, appProps}){
                 .attr('width', x=>x.width)
                 .attr('fill',x=>x.fill)
                 .on('mouseover', function(e){
-                    let d = d3.select(this).datum()
+                    let d = d3.select(this).datum();
                     let tipText = d.text
                     tTip.html(tipText)
                 }).on('mousemove', function(e){
@@ -144,23 +145,95 @@ export default function TimelineViewD3({data, rtTransform, appProps}){
                 });
 
             tweetRects.exit().remove();
+            setTimelineDrawn(true);
 
-            svg.selectAll('rect').filter('.sentimentRect').remove()
-            var sentiments = svg.selectAll('rect').filter('.sentimentRect')
-                .data(sentimentData).enter()
-                .append('rect')
-                .attr('class', 'sentimentRect')
-                .attr('x', x=>x.x)
-                .attr('y', x=>x.y)
-                .attr('height',x=>x.height)
-                .attr('width', x=>x.width)
-                .attr('fill',x=>x.fill);
-            sentiments.exit().remove();
+            var legendScale = d3.scalePow(.5)
+                .domain([.01*maxCpcDiscrete, maxCpcDiscrete])
+                .range([casesInterpolator(.01*maxCpcDiscrete), casesInterpolator(1)])
 
-            console.log(tweetRects)
+            
+            var setLegend = g => g.shapeWidth(barWidth)
+                .shapePadding(10)
+                .cells(3)
+                .orient('horizontal')
+                .labelWrap(barWidth)
+                .titleWidth(5*barWidth);
+
+            var cLgnd = legend.legendColor()
+                .scale(legendScale)
+                .shape('rect')
+                .shapeHeight(getBarHeight(1))
+                .labelOffset(10)
+                .title('Tweet Origin Cases/Person');
+
+            setLegend(cLgnd);
+
+            var heightScale = d3.scaleLinear()
+                .domain([0,2])
+                .range([getBarHeight(0),getBarHeight(2)]);
+
+            var shapeLgnd = legend.legendSize()
+                .scale(heightScale)
+                .shape('line')
+                .title("Tweet Retweets")
+                .labelOffset(15)
+                .labels(['0','1-9','10+']);
+            setLegend(shapeLgnd);
+
+            svg.selectAll('.legend').remove();
+
+            //default put the legend in the top right
+            var legendOffset = 6*barWidth;
+            var xColorLegendPos = .9*width - legendOffset;
+            var xShapeLegendPos = .9*width - 2*legendOffset;
+            var yLegendPos = yMargin + 10;
+            if(maxRtDiscreteAgainst > maxRtDiscreteFor){//move the legend if it's mosty against since the top row will be more crowed
+                xColorLegendPos = 30 + legendOffset;
+                xShapeLegendPos = 30;
+                yLegendPos = height - 10 - 2*getBarHeight(2);
+            }
+
+            var legendGroup = svg.append('g')
+                .attr('class','legend');
+
+            legendGroup.append('g')
+                .attr('class','colorLegend')
+                .attr('transform', 'translate(' + xColorLegendPos + ',' + yLegendPos + ')')
+                .call(cLgnd);
+
+            legendGroup.append('g')
+                .attr('class','shapeLegned')
+                .attr('transform', 'translate(' + xShapeLegendPos + ',' + yLegendPos + ')')
+                .call(shapeLgnd);
+            
+            
+        }
+    },[data, svgCreated, selectedFrame])
+
+    useEffect(()=>{
+        if (data && timelineDrawn) {
+            var getClass = function(tweet){
+                if(appProps.brushedCountyGroupNum < 0){ return 'tweetRect tweetRectActive';}
+                let groupNum = appProps.geoidGroupMap[parseInt(tweet.geoid)];
+                if(groupNum !== undefined & parseInt(groupNum) === parseInt(appProps.brushedCountyGroupNum)){
+                    return 'tweetRect tweetRectActive';
+                } else{
+                    return 'tweetRect';
+                }
+            }
+        
+            var tRects = svg.selectAll('.tweetRect')
+                .attr('class', d=>getClass(d))
+                .on('dblclick', function(e){
+                    let d = d3.select(this).datum();
+                    let groupNum = appProps.geoidGroupMap[parseInt(d.geoid)];
+                    if(groupNum !== undefined & groupNum !== parseInt(appProps.brushedCountyGroupNum)){
+                        appProps.setBrushedCountyGroupNum(groupNum);
+                    }
+                });
 
         }
-    },[data, svgCreated])
+    },[selectedFrame, timelineDrawn, appProps.brushedCountyGroupNum, appProps.geoidGroupMap])
 
     return (
         <div
@@ -170,26 +243,22 @@ export default function TimelineViewD3({data, rtTransform, appProps}){
     );
 }
 
-function getCalibrationValues(tData, rtTransform){
-    //gets the max values of tweets and retweet and cases for use in making all the scales
+function getRtExtents(d, filterFunc){
     var maxFor = 0;
     var maxAgainst = 0;
-    var cases = new Array();
-    for(const [day, tweets] of Object.entries(tData)){
-        let forRT = 0;
-        let againstRT = 0;
-        for(var tweet of tweets){
-            let yVal = rtTransform(tweet.retweet_count)
-
+    for(const block of d.data){
+        let tweets = block.tweets.filter(filterFunc);
+        let currFor = 0;
+        let currAgainst = 0;
+        for(const tweet of tweets){
             if(tweet.for_sah === 1){
-                forRT += yVal
+                currFor += tweet.rt_discrete + 1;
             } else{
-                againstRT += yVal
+                currAgainst += tweet.rt_discrete + 1;
             }
-            cases.push(tweet.cases_per_capita)
         }
-        maxFor = Math.max(forRT, maxFor);
-        maxAgainst = Math.max(againstRT, maxAgainst);
+        maxFor = Math.max(maxFor, currFor);
+        maxAgainst = Math.max(maxAgainst, currAgainst);
     }
-    return [maxFor, maxAgainst, cases]
+    return [maxFor, maxAgainst]
 }

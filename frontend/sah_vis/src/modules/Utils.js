@@ -2,6 +2,38 @@ import * as constants from './Constants';
 
 export default class Utils {
 
+    static nameDict = {
+        cvap: 'Population',
+        urm_pct: 'Black/Hispanic (%)',
+        female_pct: 'Female (%)',
+        net_dem_president_votes: 'Net Democratic Votes (2016)',
+        is_blue: 'Voted Democrat (2016)',
+        median_hh_income: 'Median Income',
+        lesscollege_pct: '% W/ Some College',
+        female_pct: '% Female',
+        repgov: 'Net Votes for Republican Governer',
+        clf_unemploy_pct: 'Unemployment Rate',
+        mask_score: 'Self-Reported Mask Use (1-5)',
+        rural_urban_cc: 'Rural-Urban Continum Code',
+        cases_per_capita: 'Cases/100',
+        cases_per_captia_discrete: 'Cases/100 Decile',
+        retweet_count: 'Retweets',
+        retweet_count_discrete: 'Retweet Decile'
+    }
+
+    static getVarDisplayName(varName, valueLabel){
+        var name;
+        if(varName in this.nameDict){
+            name = this.nameDict[varName]
+        } else{
+            name = varName;
+        }
+        if(valueLabel !== undefined){
+            name = (valueLabel > 0)? name:'Not '+ name;
+        }
+        return this.unPythonCase(name);
+    }
+
     static signedLog(x){
         if(Math.abs(x) < 1){
             return x
@@ -15,6 +47,16 @@ export default class Utils {
             total += val;
         }
         return total
+    }
+
+    static extents(arr){
+        let maxVal = arr[0];
+        let minVal = arr[0];
+        for(const value of arr){
+            maxVal = Math.max(maxVal, value);
+            minVal = Math.min(minVal, value)
+        }
+        return {min: minVal, max: maxVal}
     }
 
     static mean(arr){
@@ -106,6 +148,18 @@ export default class Utils {
         }
     }
 
+    static unPythonCase(string){
+        //should convert snake_case to Snake Case.  untested. based on unCamelCase
+        try{
+            var newString = string.toLowerCase()
+                .replace(/([a-z])_([a-z])/g, '$1 $2') 
+                .replace(/^./, function(str){ return str.toUpperCase(); });
+            return newString;
+        } catch{
+            return string;
+        }
+    }
+
     static formatPercent(string){
         return Utils.unCamelCase(string+'PerCapita')
     }
@@ -151,12 +205,39 @@ export default class Utils {
     }
 
     static moveTTip(tTip, event){
-        tTip.style('left', event.pageX + 'px')
-            .style('top', (event.pageY - 20) + 'px')
+        var tipBBox = tTip.node().getBoundingClientRect();
+        var tipX = event.pageX + 10;
+        var tipY = event.pageY + 10;
+        if(tipBBox.width + tipX > window.innerWidth){
+            tipX = event.pageX - 10 - tipBBox.width;
+        }
+        if(tipBBox.height + tipY > window.innerHeight){
+            tipY = event.pageY - 10 - tipBBox.height;
+        }
+        tTip.style('left', tipX + 'px')
+            .style('top', tipY + 'px')
             .style('visibility', 'visible');
     }
     
     static hideTTip(tTip){
         tTip.style('visibility', 'hidden')
+    }
+
+    static formatText(text){
+        if(text.includes('cases')){
+            return (text.includes('per_capita')? 'Cases/Capita':'Cases');
+        } 
+        if(text.includes('deaths')){
+            return (text.includes('per_capita')? 'Deaths/Capita':'Deaths');
+        }
+        if(text.includes('retweet') || text.includes('rt_discrete')){
+            return 'retweets';
+        }
+        if(text === 'cvap'){
+            return 'Population'
+        }
+        if(text === 'is_blue'){
+            return 'Voted Dem in 2016 (y/n)'
+        }
     }
 }

@@ -4,13 +4,26 @@
   width: 100%;
 }
 
-#navBar{
-  height: 3em;
-  background: gray;
+.vizRow{
+  height: calc((100vh - 1em)/2);
 }
 
-.vizRow{
-  height: calc((100vh - 2em)/2);
+.fillSpace{
+  height: 100%;
+  width: 100%;
+}
+
+.noGutter{
+  margin: 0px;
+  padding: 0px;
+}
+
+.legend line{
+  stroke: rgb(211, 74, 74);
+}
+
+.legend {
+  outline: 1px solid grey;
 }
 
 .vizComponent{
@@ -30,15 +43,36 @@
 
 
 #clusterviewWindow{
-  background: orange;
+  background: white;
+  height: 100%;
+}
+#demographicsControlPanelWindow{
+  height: 2em;
+}
+#clusterVizWindow{
+  width: 100%!important;
+  height: calc(100% - 2em)!important;
+  margin: 0px!important;
+  margin-left: .3em!important;
+  margin-right: .3em!important;
 }
 
 #mapviewWindow{
-  background: teal;
+  background: lightgrey;
 }
 
 #timelineviewWindow{
-  background: green;
+  background: white;
+  margin: 0px;
+  padding: 0px;
+}
+
+.countyVizContainer{
+  height: 100%;
+  width: 100%;
+  margin: 10px;
+  padding: 0px;
+  background: grey;
 }
 
 .d3-component{
@@ -47,6 +81,18 @@
   margin: 0px;
   margin-top: 2px;
   padding: 0px;
+}
+
+.mapBorder{
+  stroke: grey;
+  stroke-width: .1px;
+  opacity: .8;
+}
+
+.mapBorderActive{
+  stroke:black!important;
+  stroke-width: .5px!important;
+  opacity: 1!important;
 }
 
 .frameEntry{
@@ -62,11 +108,11 @@
 }
 
 .forSah{
-  fill: rgb(63, 150, 179);
+  fill: #f4a582;
 }
 
 .againstSah{
-  fill: rgb(84, 83, 94);
+  fill:#878787;
 }
 
 .positiveSentiment{
@@ -74,11 +120,11 @@
 }
 
 .negativeSentiment{
-  fill: rgb(47, 51, 7);
+  fill: black;
 }
 
 .neutralSentiment{
-  fill: rgb(135, 136, 127);
+  fill: lightgray;
 }
 
 .vividQuality{
@@ -97,12 +143,21 @@
   fill: rgb(241, 88, 88);
 }
 
+.defaultCategoricalPositive{
+  fill: black;
+}
+
+.defaultCategoricalNegative{
+  fill: grey;
+}
+
 .tooltip {	
   position: absolute;
   z-index: 10;
   opacity: 1!important;			
   text-align: center;			
-  width: auto;					
+  width: auto;		
+  max-width: 50vw;			
   height: auto;					
   padding: 10px;				
   font: 12px sans-serif;		
@@ -120,4 +175,111 @@
   font-size: .9em !important;
   /* margin-left: -.2vw; */
   font-weight: bold !important;
+}
+
+.sentimentRect {
+  height: 1em;
+  stroke: 2px black;
+}
+
+#timelineListContainer{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 0px!important;
+  padding: 0px!important;
+  width: 100%!important;
+  height: 92%!important;
+}
+
+#timelineAxisContainer{
+  height: 8%!important;
+  min-height: 2em!important;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  padding-right: 2vw !important;
+  padding-left: 1vw !important;
+}
+
+.timelineContainer{
+  height: 80%!important;
+  width: 100%!important;
+  margin: 0px!important;
+  padding: 0px!important;
+  padding-right: 2vw !important;
+  padding-left: 1vw !important;
+}
+
+
+.tweetRect{
+  stroke:grey;
+  stroke-width: .2px;
+  opacity: .8;
+}
+
+.tweetRectActive{
+  stroke: black !important;
+  stroke-width: .4px !important;
+  opacity: 1 !important;
+}
+
+.timelineAxisText{
+  font-size: .5em;
+  text-anchor: start;
+  transform: 'rotate(55)';
+}
+
+.clusterContainer{
+  height:auto;
+  width: 100%;
+  margin:0px;
+  margin-left: .3vw;
+  margin-top: .4vh;
+  padding: 0px;
+}
+
+.activeClusterSvg{
+  border: 2px solid black;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.controlPanel{
+  width: 100%!important;
+  height: auto!important;
+}
+
+.controlPanelCol{
+  height: auto!important;
+  width: 100%!important;
+  margin: 0px;
+}
+
+.titleText{
+  font-size: 1vw;
+  font-weight: bold;
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+  vertical-align: center;
+  overflow: hidden;
+  display: inline;
+}
+
+.controlDropdownButton, .controlDropdownButton > *{
+  width: 100%!important;
+  height: auto!important;
+  font-size: .8vw!important;
+  margin: 0px;
+  margin-left: .2em;
+  margin-right: .2em;
+  padding: .01;
 }

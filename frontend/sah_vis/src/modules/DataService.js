@@ -36,32 +36,26 @@ export default class DataService {
         return dData.data;
     }
 
-    async getTimelineData(frame, month, year=2020){
-        let params = {}
-        if(frame !== undefined){ params['frame'] = frame; }
-        if(month !== undefined){ params['month'] = month; }
-        if(year !== undefined){ params['year'] = year; }
-        var timelineData = await this.api.get('/timeline', {params: params});
+    async getTimelineData(nDays){
+        if(nDays === undefined){ nDays = 1; }
+        var timelineData = await this.api.get('/timeline', {params: {'nDays': nDays}});
         return timelineData.data
     }
 
-    async getCountyData(month, aggregate=false, year=2020){
-        let params = {}
-        if(month !== undefined){ params['month'] = month; }
-        if(year !== undefined){ params['year'] = year; }
-        if(aggregate !== undefined){ params['aggregate'] = aggregate; }
-        var countyData = await this.api.get('/countys', {params: params});
+    async getCountyData(){
+        var countyData = await this.api.get('/countys');
         return countyData.data
     }
 
     async getMapBorders(aggregate=false){
+        //I made it so it now sends it with the county data so this is obselete but maybe useful later?
         let params = {'aggregate': aggregate};
         var mapData = await this.api.get('/map', {params: params});
         return mapData.data
     }
 
-    async getClusterData(cluster_fields, nclusters = 4 ){
-        let params = {'n_clusters': nclusters, 'cluster_fields': cluster_fields};
+    async getClusterData(clusterFields){
+        let params = {'clusterFields': clusterFields};
         //this makes it so he query become 'cluster_fields' and not 'cluser_fields[]' which is hard to work with
         var paramQuery = querystring.stringify(params);
         var clusterData = await this.api.get('/clusters?'+paramQuery);

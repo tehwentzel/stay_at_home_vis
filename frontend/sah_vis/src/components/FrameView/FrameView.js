@@ -15,6 +15,7 @@ export default function FrameView(props){
 
     const fetchFrameData = async () => {
         const res = await props.api.getFrameViewData();
+        console.log("Frameview", res)
         setFrameData(res);
     }
 
